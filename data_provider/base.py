@@ -21,6 +21,7 @@ from threading import BoundedSemaphore, RLock, Thread
 from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Callable, Optional, List, Tuple, Dict, Any
+from data_provider.twstock_fetcher import TWStockFetcher
 
 import pandas as pd
 import numpy as np
@@ -1668,7 +1669,23 @@ class DataFetcherManager:
             if isinstance(payload, dict) and DataFetcherManager._has_meaningful_payload(payload.get("data")):
                 return True
         return False
-
+def get_fetcher(provider_name: str = None):
+    if provider_name is None:
+        from src.config import DATA_PROVIDER
+        provider_name = DATA_PROVIDER
+        
+    provider_name = provider_name.lower()
+    
+    # 在這裡加入 yfinance_tw 的判斷
+    if provider_name == "yfinance_tw":
+        return TWStockFetcher()
+    
+    # ... 原本的 akshare, tushare 等判斷 ...
+    elif provider_name == "akshare":
+        from data_provider.akshare_fetcher import AkShareFetcher
+        return AkShareFetcher()
+    # ...
+    
     def _build_market_not_supported(self, market: str, reason: str) -> Dict[str, Any]:
         blocks = {
             "valuation": self._build_fundamental_block(
