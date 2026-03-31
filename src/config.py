@@ -9,6 +9,11 @@ A股自选股智能分析系统 - 配置管理模块
 2. 从 .env 文件加载敏感配置
 3. 提供类型安全的配置访问接口
 """
+# 1. 將預設大盤指數改為台股加權指數 (^TWII)
+DEFAULT_MARKET_INDEX = os.getenv("DEFAULT_MARKET_INDEX", "^TWII")
+
+# 2. 將預設資料提供者設為我們建立的台股抓取器
+DATA_PROVIDER = os.getenv("DATA_PROVIDER", "yfinance_tw")
 
 import json
 import logging
